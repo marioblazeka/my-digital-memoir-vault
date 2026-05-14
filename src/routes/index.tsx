@@ -135,7 +135,7 @@ function Index() {
     
 
     {/* Skip to content */}
-    <a id="pojo-a11y-skip-content" className="pojo-skip-link" tabIndex="1" accessKey="s" href="#main-content" role="link">Preskoči na sadržaj</a>
+    <a id="pojo-a11y-skip-content" className="pojo-skip-link" tabIndex={1} accessKey="s" href="#main-content" role="link">Preskoči na sadržaj</a>
 
     {/* Kolačići banner */}
     <div id="cookie-banner" className="cookie-banner" role="dialog" aria-live="polite" aria-label="Obavijest o kolačićima">
@@ -152,7 +152,7 @@ function Index() {
         </div>
     </div>
 
-    <main id="main-content" className="main-content" tabIndex="-1">
+    <main id="main-content" className="main-content" tabIndex={-1}>
 
         {/* HERO SEKCIJA SA ANIMIRANIM TEKSTOM */}
         <header className="header hero-section">

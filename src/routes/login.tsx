@@ -57,7 +57,7 @@ function LoginPage() {
   }, [navigate]);
   return (<>
 {/* Skip to content */}
-    <a id="pojo-a11y-skip-content" className="pojo-skip-link" tabIndex="1" accessKey="s" href="#main-content" role="link">Preskoči na sadržaj</a>
+    <a id="pojo-a11y-skip-content" className="pojo-skip-link" tabIndex={1} accessKey="s" href="#main-content" role="link">Preskoči na sadržaj</a>
 
     <main id="main-content" className="main-content">
         <header className="header">
