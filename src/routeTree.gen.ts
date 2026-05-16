@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OMeniRouteImport } from './routes/o-meni'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
 
+const OMeniRoute = OMeniRouteImport.update({
+  id: '/o-meni',
+  path: '/o-meni',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/o-meni': typeof OMeniRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/o-meni': typeof OMeniRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,21 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/o-meni': typeof OMeniRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contact' | '/dashboard' | '/login' | '/logout'
+  fullPaths: '/' | '/contact' | '/dashboard' | '/login' | '/logout' | '/o-meni'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contact' | '/dashboard' | '/login' | '/logout'
-  id: '__root__' | '/' | '/contact' | '/dashboard' | '/login' | '/logout'
+  to: '/' | '/contact' | '/dashboard' | '/login' | '/logout' | '/o-meni'
+  id:
+    | '__root__'
+    | '/'
+    | '/contact'
+    | '/dashboard'
+    | '/login'
+    | '/logout'
+    | '/o-meni'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,10 +93,18 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
+  OMeniRoute: typeof OMeniRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/o-meni': {
+      id: '/o-meni'
+      path: '/o-meni'
+      fullPath: '/o-meni'
+      preLoaderRoute: typeof OMeniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/logout': {
       id: '/logout'
       path: '/logout'
@@ -125,7 +149,18 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
+  OMeniRoute: OMeniRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
