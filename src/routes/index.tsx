@@ -529,6 +529,20 @@ function HomePage() {
             </div>
         </section>
 
+        {/* PRIJAVA ZLOUPORABE */}
+        <section className="section" aria-labelledby="abuse-link-title">
+            <h2 id="abuse-link-title">🚨 Prijava zlouporabe / Report Abuse</h2>
+            <p>
+                Uočili ste neprikladan sadržaj, phishing, kršenje autorskih ili žigovnih prava?
+                Prijavite to putem stranice za zlouporabu.
+                <br />
+                <em>Spotted inappropriate content, phishing, copyright or trademark infringement? Report it on the dedicated page.</em>
+            </p>
+            <p>
+                <Link to="/abuse" className="btn-link">Otvori prijavu / Open report page →</Link>
+            </p>
+        </section>
+
         {/* VISITOR COUNTER & STATISTICS */}
         <div id="stats-widget" className="stats-widget">
           <div className="stats-toggle" title="Statistika">
