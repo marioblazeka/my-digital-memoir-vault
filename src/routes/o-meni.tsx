@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { z } from "zod";
 
 export const Route = createFileRoute("/o-meni")({
   head: () => ({
@@ -12,7 +14,37 @@ export const Route = createFileRoute("/o-meni")({
   component: OMeniPage,
 });
 
+const contactSchema = z.object({
+  name: z.string().trim().min(2, "Ime mora imati barem 2 znaka").max(100, "Ime je predugačko"),
+  email: z.string().trim().email("Neispravna email adresa").max(255),
+  subject: z.string().trim().min(2, "Predmet je obavezan").max(150),
+  message: z.string().trim().min(5, "Poruka mora imati barem 5 znakova").max(2000, "Poruka je predugačka"),
+});
+
 function OMeniPage() {
+  const [status, setStatus] = useState<null | { type: "ok" | "err"; msg: string }>(null);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      subject: (form.elements.namedItem("subject") as HTMLInputElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+    };
+    const parsed = contactSchema.safeParse(data);
+    if (!parsed.success) {
+      setStatus({ type: "err", msg: parsed.error.issues[0]?.message ?? "Provjerite unos." });
+      return;
+    }
+    const body = `${parsed.data.message}\n\n— ${parsed.data.name} <${parsed.data.email}>`;
+    window.location.href =
+      `mailto:blazekamario@gmail.com?subject=${encodeURIComponent(parsed.data.subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+    setStatus({ type: "ok", msg: "Otvaram vaš email klijent…" });
+  };
+
   return (
     <>
       <main id="main-content" className="main-content" tabIndex={-1}>
@@ -116,6 +148,89 @@ function OMeniPage() {
           >
             Posjeti LinkedIn profil →
           </a>
+        </section>
+
+        {/* KONTAKT KARTICA */}
+        <section className="section" aria-labelledby="contact-card-title">
+          <h2 id="contact-card-title">📬 Kontakt forma</h2>
+          <div className="contact-grid">
+            <div className="contact-info-card">
+              <h3>Kontakt podaci</h3>
+              <ul className="contact-list">
+                <li>
+                  <span className="contact-ico" aria-hidden="true">📍</span>
+                  <div>
+                    <strong>Adresa</strong>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Murska+12%2C+40320+Donji+Kraljevec"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Murska 12, 40320 Donji Kraljevec
+                    </a>
+                  </div>
+                </li>
+                <li>
+                  <span className="contact-ico" aria-hidden="true">📞</span>
+                  <div>
+                    <strong>Telefon</strong>
+                    <a href="tel:+385915008312">+385 91 500 8312</a>
+                  </div>
+                </li>
+                <li>
+                  <span className="contact-ico" aria-hidden="true">✉️</span>
+                  <div>
+                    <strong>Email</strong>
+                    <a href="mailto:blazekamario@gmail.com">blazekamario@gmail.com</a>
+                  </div>
+                </li>
+              </ul>
+
+              <div className="contact-map">
+                <iframe
+                  title="Lokacija na Google Maps — Murska 12, Donji Kraljevec"
+                  src="https://www.google.com/maps?q=Murska+12,+40320+Donji+Kraljevec&output=embed"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+
+            <form className="contact-form-card" onSubmit={handleSubmit} noValidate>
+              <h3>Pošalji poruku</h3>
+              <div className="form-row">
+                <label htmlFor="cf-name">Ime i prezime</label>
+                <input id="cf-name" name="name" type="text" required maxLength={100} autoComplete="name" />
+              </div>
+              <div className="form-row">
+                <label htmlFor="cf-email">Email</label>
+                <input id="cf-email" name="email" type="email" required maxLength={255} autoComplete="email" />
+              </div>
+              <div className="form-row">
+                <label htmlFor="cf-subject">Predmet</label>
+                <input id="cf-subject" name="subject" type="text" required maxLength={150} />
+              </div>
+              <div className="form-row">
+                <label htmlFor="cf-message">Poruka</label>
+                <textarea id="cf-message" name="message" rows={5} required maxLength={2000} />
+              </div>
+              {status && (
+                <p
+                  className={status.type === "ok" ? "form-msg form-ok" : "form-msg form-err"}
+                  role={status.type === "err" ? "alert" : "status"}
+                >
+                  {status.msg}
+                </p>
+              )}
+              <button type="submit" className="contact-submit-btn">
+                ✉️ Pošalji poruku
+              </button>
+              <p className="form-hint">
+                Klikom na "Pošalji poruku" otvara se vaš email klijent s pripremljenom porukom.
+              </p>
+            </form>
+          </div>
         </section>
 
         <section className="section about-section" style={{ textAlign: "center" }}>
