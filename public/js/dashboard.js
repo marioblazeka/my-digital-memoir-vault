@@ -5,7 +5,7 @@
 
             if (!isLoggedIn || !userData) {
                 // Nema logiranja - preusmjeri na login
-                window.location.href = 'login.html';
+                window.location.href = '/login';
                 return;
             }
 
@@ -39,7 +39,7 @@
                 alert('Uspješno ste se odjavili!');
                 
                 // Redirekcija
-                window.location.href = 'index.html';
+                window.location.href = '/';
             }
         });
 

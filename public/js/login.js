@@ -55,7 +55,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
 
                     // Redirekcija nakon 1.5 sekunde
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = '/dashboard';
                     }, 1500);
 
                 } else {
