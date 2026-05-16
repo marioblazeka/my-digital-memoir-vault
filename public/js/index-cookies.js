@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var rejectBtn = document.getElementById('reject-cookies');
             
             if (!localStorage.getItem('cookiesAccepted')) {
-                banner.style.display = 'block';
+                banner.style.display = 'flex';
             } else {
                 banner.style.display = 'none';
             }
