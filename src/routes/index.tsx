@@ -56,8 +56,13 @@ function HomePage() {
                     
                     {/* Tekst koji se vrti u krug */}
                     <text className="rotating-text" fontSize="18" fontWeight="bold" fill="#000000" letterSpacing="4">
-                        <textPath href="#circlePath" startOffset="0%" textAnchor="middle">
-                            ★ Mario Blažeka osobna Web stranica  ★  Informativni sadržaj za kolegij Web aplikacije!!! ★
+                        <textPath
+                            href="#circlePath"
+                            startOffset="0"
+                            textLength="754"
+                            lengthAdjust="spacingAndGlyphs"
+                        >
+                            ★ Mario Blažeka ★ Osobna Web stranica ★ Kolegij: Web aplikacije ★
                         </textPath>
                     </text>
                 </svg>
