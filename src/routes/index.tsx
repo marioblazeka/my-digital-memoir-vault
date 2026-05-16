@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { ExternalScripts } from "@/components/ExternalScripts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -7,131 +7,18 @@ export const Route = createFileRoute("/")({
       { title: "Mario Blažeka – Osobna web stranica | Web aplikacije" },
       { name: "description", content: "Mario Blažeka - Osobna web stranica | Web aplikacije - Edukativni sadržaj sa web alatima" },
       { property: "og:title", content: "Mario Blažeka – Osobna web stranica" },
-      { property: "og:description", content: "Edukativni sadržaj sa web alatima za kolegij Web aplikacije." },
+      { property: "og:description", content: "Edukativni web alati za kolegij Web aplikacije." },
     ],
   }),
-  component: Index,
+  component: HomePage,
 });
 
-function Index() {
-  useEffect(() => {
-    // Trčeći naslov u tabu
-    const scrollingText = "★ Mario Blažeka : Mario Blažeka osobna Web stranica, primjer sa raznim web alatima za edukaciju! Informativni sadržaj za kolegij Web aplikacije!!! ★ ";
-    let position = 0;
-    const titleInterval = setInterval(() => {
-      position = (position + 1) % scrollingText.length;
-      const display = scrollingText.substring(position) + scrollingText.substring(0, position);
-      document.title = display.substring(0, 60);
-    }, 200);
-    const onVis = () => { if (!document.hidden) { document.title = "Mario Blažeka – Osobna web stranica | Web aplikacije"; position = 0; } };
-    const onBlur = () => { document.title = "Mario Blažeka – Vrati se! 👈"; };
-    const onFocus = () => { document.title = "Mario Blažeka – Osobna web stranica | Web aplikacije"; position = 0; };
-    document.addEventListener('visibilitychange', onVis);
-    window.addEventListener('blur', onBlur);
-    window.addEventListener('focus', onFocus);
-
-    // Cookie banner
-    const banner = document.getElementById('cookie-banner') as HTMLElement | null;
-    const acceptBtn = document.getElementById('accept-cookies');
-    const rejectBtn = document.getElementById('reject-cookies');
-    if (banner) {
-      banner.style.display = localStorage.getItem('cookiesAccepted') ? 'none' : 'block';
-    }
-    const accept = () => { localStorage.setItem('cookiesAccepted','1'); if (banner) banner.style.display='none'; };
-    const reject = () => { localStorage.setItem('cookiesAccepted','0'); if (banner) banner.style.display='none'; };
-    acceptBtn?.addEventListener('click', accept);
-    rejectBtn?.addEventListener('click', reject);
-
-    // Back to top
-    const backToTop = document.getElementById('backToTop') as HTMLElement | null;
-    const onScroll = () => { if (backToTop) backToTop.style.display = window.scrollY > 300 ? 'block' : 'none'; };
-    const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-    window.addEventListener('scroll', onScroll);
-    backToTop?.addEventListener('click', toTop);
-
-    // Visitor stats
-    const detectBrowser = () => {
-      const ua = navigator.userAgent;
-      if (ua.indexOf('Firefox') > -1) return 'Firefox';
-      if (ua.indexOf('Edge') > -1) return 'Edge';
-      if (ua.indexOf('Chrome') > -1) return 'Chrome';
-      if (ua.indexOf('Safari') > -1) return 'Safari';
-      return 'Nepoznat';
-    };
-    const detectDevice = () => {
-      const ua = navigator.userAgent;
-      if (/mobile/i.test(ua)) return '📱 Mobitel';
-      if (/tablet/i.test(ua)) return '📱 Tablet';
-      return '💻 Desktop';
-    };
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const tzLabel = tz.includes('Europe/Zagreb') ? '🇭🇷 Hrvatska (UTC+1)' : tz;
-    type Stats = { totalVisitors: number; pageLoads: number; lastVisit: string; sessionStartTime: number; mostViewedPage: string; browserType: string; deviceType: string; timezone: string; todayVisitors: number; };
-    const raw = localStorage.getItem('visitorStats');
-    const stats: Stats = raw ? JSON.parse(raw) : { totalVisitors: 0, pageLoads: 0, lastVisit: new Date().toLocaleString('hr-HR'), sessionStartTime: Date.now(), mostViewedPage: window.location.pathname, browserType: detectBrowser(), deviceType: detectDevice(), timezone: tzLabel, todayVisitors: 0 };
-    stats.totalVisitors++;
-    stats.pageLoads++;
-    stats.lastVisit = new Date().toLocaleString('hr-HR');
-    const today = new Date().toDateString();
-    const lastDay = localStorage.getItem('lastVisitDay') || '';
-    if (today === lastDay) {
-      stats.todayVisitors = (parseInt(localStorage.getItem('todayVisitors') || '0') || 0) + 1;
-    } else {
-      stats.todayVisitors = 1;
-      localStorage.setItem('lastVisitDay', today);
-    }
-    localStorage.setItem('visitorStats', JSON.stringify(stats));
-    localStorage.setItem('todayVisitors', String(stats.todayVisitors));
-    localStorage.setItem('sessionStartTime', String(stats.sessionStartTime));
-    const currentOnline = Math.floor(Math.random() * 15) + 1;
-    localStorage.setItem('currentVisitors', String(currentOnline));
-    const setText = (id: string, t: string) => { const el = document.getElementById(id); if (el) el.textContent = t; };
-    setText('total-visitors', stats.totalVisitors.toLocaleString('hr-HR'));
-    setText('current-visitors', currentOnline.toLocaleString('hr-HR'));
-    setText('today-visitors', stats.todayVisitors.toLocaleString('hr-HR'));
-    setText('page-loads', stats.pageLoads.toLocaleString('hr-HR'));
-    setText('timezone', stats.timezone);
-    setText('device-type', stats.deviceType);
-    setText('browser-type', stats.browserType);
-    setText('last-visit', stats.lastVisit);
-    setText('most-viewed', stats.mostViewedPage);
-    const timer = setInterval(() => {
-      const start = parseInt(localStorage.getItem('sessionStartTime') || String(Date.now()));
-      const elapsed = Math.floor((Date.now() - start) / 1000);
-      const m = Math.floor(elapsed / 60);
-      const s = elapsed % 60;
-      setText('visit-time', `${m}m ${s}s`);
-    }, 1000);
-
-    const toggle = document.querySelector('.stats-toggle') as HTMLElement | null;
-    const panel = document.querySelector('.stats-panel') as HTMLElement | null;
-    const closeBtn = document.querySelector('.stats-close') as HTMLElement | null;
-    const onToggle = (e: Event) => { e.stopPropagation(); if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none'; };
-    const onClose = () => { if (panel) panel.style.display = 'none'; };
-    const onDocClick = (e: MouseEvent) => { if (!(e.target as HTMLElement).closest('.stats-widget') && panel) panel.style.display = 'none'; };
-    toggle?.addEventListener('click', onToggle);
-    closeBtn?.addEventListener('click', onClose);
-    document.addEventListener('click', onDocClick);
-
-    return () => {
-      clearInterval(titleInterval);
-      clearInterval(timer);
-      document.removeEventListener('visibilitychange', onVis);
-      window.removeEventListener('blur', onBlur);
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('scroll', onScroll);
-      acceptBtn?.removeEventListener('click', accept);
-      rejectBtn?.removeEventListener('click', reject);
-      backToTop?.removeEventListener('click', toTop);
-      toggle?.removeEventListener('click', onToggle);
-      closeBtn?.removeEventListener('click', onClose);
-      document.removeEventListener('click', onDocClick);
-    };
-  }, []);
-
+function HomePage() {
   return (
     <>
-{/* JAVASCRIPT ZA TRČEĆI TEKST U KARTICI */}
+
+
+    {/* JAVASCRIPT ZA TRČEĆI TEKST U KARTICI */}
     
 
     {/* Skip to content */}
@@ -168,8 +55,8 @@ function Index() {
                     </defs>
                     
                     {/* Tekst koji se vrti u krug */}
-                    <text className="rotating-text" font-size="18" font-weight="bold" fill="#000000" letter-spacing="4">
-                        <textPath href="#circlePath" startOffset="0%" text-anchor="middle">
+                    <text className="rotating-text" fontSize="18" fontWeight="bold" fill="#000000" letterSpacing="4">
+                        <textPath href="#circlePath" startOffset="0%" textAnchor="middle">
                             ★ Mario Blažeka osobna Web stranica  ★  Informativni sadržaj za kolegij Web aplikacije!!! ★
                         </textPath>
                     </text>
@@ -225,7 +112,7 @@ function Index() {
                                 <li>Forme i validacija</li>
                             </ul>
                         </div>
-                        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -240,7 +127,7 @@ function Index() {
                                 <li>Media queries (responsive)</li>
                             </ul>
                         </div>
-                        <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -255,7 +142,7 @@ function Index() {
                                 <li>REST API pozivi</li>
                             </ul>
                         </div>
-                        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -270,7 +157,7 @@ function Index() {
                                 <li>Responsive breakpoints</li>
                             </ul>
                         </div>
-                        <a href="https://getbootstrap.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://getbootstrap.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -285,7 +172,7 @@ function Index() {
                                 <li>Hooks</li>
                             </ul>
                         </div>
-                        <a href="https://react.dev/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://react.dev/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -300,7 +187,7 @@ function Index() {
                                 <li>Direktivne</li>
                             </ul>
                         </div>
-                        <a href="https://vuejs.org/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://vuejs.org/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
                 </div>
             </div>
@@ -321,7 +208,7 @@ function Index() {
                                 <li>NPM ekosistem</li>
                             </ul>
                         </div>
-                        <a href="https://nodejs.org/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://nodejs.org/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -336,7 +223,7 @@ function Index() {
                                 <li>REST API razvoj</li>
                             </ul>
                         </div>
-                        <a href="https://expressjs.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://expressjs.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -351,7 +238,7 @@ function Index() {
                                 <li>Session management</li>
                             </ul>
                         </div>
-                        <a href="https://www.php.net/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.php.net/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -366,7 +253,7 @@ function Index() {
                                 <li>Artificial Intelligence</li>
                             </ul>
                         </div>
-                        <a href="https://www.python.org/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.python.org/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -381,7 +268,7 @@ function Index() {
                                 <li>Indeksiranje</li>
                             </ul>
                         </div>
-                        <a href="https://www.mysql.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.mysql.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -396,7 +283,7 @@ function Index() {
                                 <li>Fleksibilan šema</li>
                             </ul>
                         </div>
-                        <a href="https://www.mongodb.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.mongodb.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
                 </div>
             </div>
@@ -417,7 +304,7 @@ function Index() {
                                 <li>GitHub Pages</li>
                             </ul>
                         </div>
-                        <a href="https://github.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://github.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -432,7 +319,7 @@ function Index() {
                                 <li>Docker Compose</li>
                             </ul>
                         </div>
-                        <a href="https://www.docker.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.docker.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -447,7 +334,7 @@ function Index() {
                                 <li>Extensions</li>
                             </ul>
                         </div>
-                        <a href="https://code.visualstudio.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://code.visualstudio.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -462,7 +349,7 @@ function Index() {
                                 <li>Script runner</li>
                             </ul>
                         </div>
-                        <a href="https://www.npmjs.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.npmjs.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -477,7 +364,7 @@ function Index() {
                                 <li>Hot module reload</li>
                             </ul>
                         </div>
-                        <a href="https://webpack.js.org/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://webpack.js.org/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -492,7 +379,7 @@ function Index() {
                                 <li>Dokumentacija</li>
                             </ul>
                         </div>
-                        <a href="https://www.postman.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.postman.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
                 </div>
             </div>
@@ -513,7 +400,7 @@ function Index() {
                                 <li>Best practices</li>
                             </ul>
                         </div>
-                        <a href="https://developer.mozilla.org/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://developer.mozilla.org/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -528,7 +415,7 @@ function Index() {
                                 <li>Certificate</li>
                             </ul>
                         </div>
-                        <a href="https://www.codecademy.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.codecademy.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -543,7 +430,7 @@ function Index() {
                                 <li>Projekti</li>
                             </ul>
                         </div>
-                        <a href="https://www.freecodecamp.org/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.freecodecamp.org/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -558,7 +445,7 @@ function Index() {
                                 <li>Reputacija</li>
                             </ul>
                         </div>
-                        <a href="https://stackoverflow.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://stackoverflow.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -573,7 +460,7 @@ function Index() {
                                 <li>Reference</li>
                             </ul>
                         </div>
-                        <a href="https://www.w3schools.com/" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://www.w3schools.com/" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
 
                     <div className="tool-card">
@@ -588,7 +475,7 @@ function Index() {
                                 <li>CI/CD</li>
                             </ul>
                         </div>
-                        <a href="https://github.com/skills" target="_blank" className="btn-link">Saznaj više →</a>
+                        <a href="https://github.com/skills" target="_blank" rel="noreferrer" className="btn-link">Saznaj više →</a>
                     </div>
                 </div>
             </div>
@@ -631,7 +518,7 @@ function Index() {
             <h2 id="contact-title">📞 Kontakt</h2>
             <div className="contact-info">
                 <p><strong>Email:</strong> <a href="mailto:mario@example.com">mario@example.com</a></p>
-                <p><strong>GitHub:</strong> <a href="https://github.com/marioblazeka" target="_blank">github.com/marioblazeka</a></p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/marioblazeka" target="_blank" rel="noreferrer">github.com/marioblazeka</a></p>
                 <p><strong>Fakultet:</strong> Fakultet informatike - Kolegij: Web aplikacije</p>
                 <p><strong>Akademska godina:</strong> 2025/2026</p>
             </div>
@@ -642,7 +529,7 @@ function Index() {
           <div className="stats-toggle" title="Statistika">
             📊
           </div>
-          <div className="stats-panel" style={{'display': 'none'}}>
+          <div className="stats-panel" style={{'display':'none'}}>
             <div className="stats-header">
               <h3>📈 Statistika portala</h3>
               <button className="stats-close" aria-label="Zatvori">✕</button>
@@ -710,6 +597,8 @@ function Index() {
     
 
     {/* ACCESSIBILITY WIDGET - 29 mogućnosti pristupačnosti */}
+    
+      <ExternalScripts srcs={["/js/index-tab.js", "/js/index-stats.js", "/js/index-cookies.js", "/js/accessibility-widget.js"]} />
     </>
   );
 }
