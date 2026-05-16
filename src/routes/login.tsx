@@ -1,62 +1,22 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { ExternalScripts } from "@/components/ExternalScripts";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Prijava – Privatni prostor" }, { name: "description", content: "Prijava na privatni dio web stranice" }] }),
+  head: () => ({
+    meta: [
+      { title: "Prijava – Privatni prostor" },
+      { name: "description", content: "Prijava na privatni dio web stranice" },
+    ],
+  }),
   component: LoginPage,
 });
 
 function LoginPage() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    const form = document.getElementById('login-form') as HTMLFormElement | null;
-    const onSubmit = (e: Event) => {
-      e.preventDefault();
-      const username = (document.getElementById('username') as HTMLInputElement).value.trim();
-      const password = (document.getElementById('password') as HTMLInputElement).value;
-      const remember = (document.getElementById('remember') as HTMLInputElement).checked;
-      const errorMsg = document.getElementById('error-message') as HTMLElement;
-      const successMsg = document.getElementById('success-message') as HTMLElement;
-      errorMsg.style.display = 'block';
-      successMsg.style.display = 'none';
-      setTimeout(() => {
-        if (!sessionStorage.getItem('first_attempt')) {
-          sessionStorage.setItem('first_attempt', 'true');
-          errorMsg.style.display = 'block';
-          (document.getElementById('username') as HTMLInputElement).focus();
-          return;
-        }
-        const validUsers: Record<string,string> = { 'mario':'password','mario@example.com':'password','test':'password','test@example.com':'password' };
-        if (validUsers[username] && validUsers[username] === password) {
-          errorMsg.style.display = 'none';
-          successMsg.style.display = 'block';
-          const userData = { username, login_time: new Date().toLocaleString('hr-HR'), remember };
-          localStorage.setItem('user_data', JSON.stringify(userData));
-          localStorage.setItem('logged_in', 'true');
-          if (remember) localStorage.setItem('remember_token', 'token_' + Date.now());
-          setTimeout(() => navigate({ to: '/dashboard' }), 1500);
-        } else {
-          errorMsg.style.display = 'block';
-          successMsg.style.display = 'none';
-          (document.getElementById('password') as HTMLInputElement).value = '';
-          (document.getElementById('username') as HTMLInputElement).focus();
-        }
-      }, 1500);
-    };
-    form?.addEventListener('submit', onSubmit);
-    const backToTop = document.getElementById('backToTop') as HTMLElement | null;
-    const onScroll = () => { if (backToTop) backToTop.style.display = window.scrollY > 300 ? 'block' : 'none'; };
-    const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-    window.addEventListener('scroll', onScroll);
-    backToTop?.addEventListener('click', toTop);
-    return () => {
-      form?.removeEventListener('submit', onSubmit);
-      window.removeEventListener('scroll', onScroll);
-      backToTop?.removeEventListener('click', toTop);
-    };
-  }, [navigate]);
-  return (<>
-{/* Skip to content */}
+  return (
+    <>
+
+
+    {/* Skip to content */}
     <a id="pojo-a11y-skip-content" className="pojo-skip-link" tabIndex={1} accessKey="s" href="#main-content" role="link">Preskoči na sadržaj</a>
 
     <main id="main-content" className="main-content">
@@ -68,13 +28,13 @@ function LoginPage() {
         <section className="section login-section">
             
             {/* PORUKA GREŠKE - Uvijek se prikazuje prvi put */}
-            <div id="error-message" className="error-message" style={{'display': 'none'}}>
+            <div id="error-message" className="error-message" style={{'display':'none'}}>
                 <strong>⚠️ Podaci nisu točni!</strong>
                 <p>Molimo provjerite korisničko ime i lozinku.</p>
             </div>
 
             {/* PORUKA USPJEHA */}
-            <div id="success-message" className="success-message" style={{'display': 'none'}}>
+            <div id="success-message" className="success-message" style={{'display':'none'}}>
                 <strong>✅ Uspješno ste se ulogirani!</strong>
                 <p>Preusmjeravanje na dashboard...</p>
             </div>
@@ -127,7 +87,7 @@ function LoginPage() {
                     <li><strong>Korisničko ime:</strong> mario</li>
                     <li><strong>Lozinka:</strong>********</li>
                 </ul>
-                <p style={{'marginTop': '1rem', 'fontSize': '0.9rem', 'color': '#666'}}>
+                <p style={{'marginTop':'1rem', 'fontSize':'0.9rem', 'color':'#666'}}>
                     ℹ️ <em>Napomena: Pokušajte ponovno sa točnim podacima.</em>
                 </p>
             </div>
@@ -147,5 +107,9 @@ function LoginPage() {
     </footer>
 
     {/* JAVASCRIPT - Login logika */}
-  </>);
+    
+    
+      <ExternalScripts srcs={["/js/login.js", "/js/accessibility-widget.js"]} />
+    </>
+  );
 }

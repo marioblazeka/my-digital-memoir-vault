@@ -1,50 +1,22 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { ExternalScripts } from "@/components/ExternalScripts";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard – Privatni prostor" }, { name: "description", content: "Privatni dashboard za ulogirane korisnike" }] }),
+  head: () => ({
+    meta: [
+      { title: "Dashboard – Privatni prostor" },
+      { name: "description", content: "Privatni dashboard za ulogirane korisnike" },
+    ],
+  }),
   component: DashboardPage,
 });
 
 function DashboardPage() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem('logged_in');
-    const userRaw = localStorage.getItem('user_data');
-    if (!isLoggedIn || !userRaw) { navigate({ to: '/login' }); return; }
-    const user = JSON.parse(userRaw);
-    const displayName = String(user.username).split('@')[0];
-    const set = (id: string, t: string) => { const el = document.getElementById(id); if (el) el.textContent = t; };
-    set('welcome-name', displayName);
-    set('username-display', displayName);
-    set('display-username', user.username);
-    set('display-time', user.login_time);
+  return (
+    <>
 
-    const logoutBtn = document.getElementById('logout-btn');
-    const onLogout = () => {
-      if (confirm('Jeste li sigurni da se želite odjaviti?')) {
-        localStorage.removeItem('logged_in');
-        localStorage.removeItem('user_data');
-        localStorage.removeItem('remember_token');
-        sessionStorage.removeItem('first_attempt');
-        navigate({ to: '/logout' });
-      }
-    };
-    logoutBtn?.addEventListener('click', onLogout);
 
-    const backToTop = document.getElementById('backToTop') as HTMLElement | null;
-    const onScroll = () => { if (backToTop) backToTop.style.display = window.scrollY > 300 ? 'block' : 'none'; };
-    const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-    window.addEventListener('scroll', onScroll);
-    backToTop?.addEventListener('click', toTop);
-    return () => {
-      logoutBtn?.removeEventListener('click', onLogout);
-      window.removeEventListener('scroll', onScroll);
-      backToTop?.removeEventListener('click', toTop);
-    };
-  }, [navigate]);
-  return (<>
-{/* Skip to content */}
+    {/* Skip to content */}
     <a id="pojo-a11y-skip-content" className="pojo-skip-link" tabIndex={1} accessKey="s" href="#main-content" role="link">Preskoči na sadržaj</a>
 
     {/* NAVIGACIJSKA TRAKA */}
@@ -122,7 +94,7 @@ function DashboardPage() {
                     <strong>Važno:</strong> Nikada ne dijelite svoju lozinku s nikime. 
                     Ako koristite javno računalo, obavezno se odjavite prije nego što napustite stranicu.
                 </p>
-                <p style={{'marginTop': '1rem'}}>
+                <p style={{'marginTop':'1rem'}}>
                     <strong>Session vrijeme:</strong> Vaša prijava će istjeći nakon 30 minuta neaktivnosti 
                     iz sigurnosnih razloga.
                 </p>
@@ -139,5 +111,8 @@ function DashboardPage() {
     </footer>
 
     {/* JAVASCRIPT - Učitavanje korisničkih podataka i odjava */}
-  </>);
+    
+      <ExternalScripts srcs={["/js/dashboard.js", "/js/accessibility-widget.js"]} />
+    </>
+  );
 }
