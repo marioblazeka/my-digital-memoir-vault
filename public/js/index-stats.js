@@ -107,22 +107,32 @@
               }
             }
 
-            document.addEventListener('DOMContentLoaded', function() {
-              new VisitorStats();
-              initStatsWidget();
-            });
+            function bootStats() {
+              if (!document.getElementById('total-visitors')) {
+                // markup nije još na stranici — pokušaj kasnije
+                return setTimeout(bootStats, 100);
+              }
+              try { new VisitorStats(); } catch (e) { console.error('[stats] init', e); }
+              try { initStatsWidget(); } catch (e) { console.error('[stats] widget', e); }
+            }
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', bootStats);
+            } else {
+              bootStats();
+            }
 
             function initStatsWidget() {
               const toggle = document.querySelector('.stats-toggle');
               const panel = document.querySelector('.stats-panel');
               const closeBtn = document.querySelector('.stats-close');
+              if (!toggle || !panel) return;
 
               toggle.addEventListener('click', function(e) {
                 e.stopPropagation();
                 panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
               });
 
-              closeBtn.addEventListener('click', function() {
+              closeBtn && closeBtn.addEventListener('click', function() {
                 panel.style.display = 'none';
               });
 
