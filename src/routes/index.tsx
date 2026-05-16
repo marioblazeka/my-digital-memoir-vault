@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalScripts } from "@/components/ExternalScripts";
 
 export const Route = createFileRoute("/")({
@@ -81,7 +81,7 @@ function HomePage() {
 
         {/* O MENI SEKCIJA */}
         <section className="section about-section" aria-labelledby="about-title">
-            <h2 id="about-title">👨‍💻 O meni</h2>
+            <h2 id="about-title"><Link to="/o-meni" className="about-link">👨‍💻 O meni</Link></h2>
             <div className="about-content">
                 <p>
                     Pozdrav! Ja sam <strong>Mario Blažeka</strong>, student na <strong>Fakultetu informatike</strong>.
