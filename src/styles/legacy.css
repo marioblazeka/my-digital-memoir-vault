@@ -1159,3 +1159,26 @@ body.yellow-theme .hero-section {
     .cookie-buttons { justify-content: stretch; }
     .cookie-btn { flex: 1; }
 }
+
+/* Skip-to-content link: visible only on keyboard focus (a11y) */
+.pojo-skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 100000;
+}
+.pojo-skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+    width: auto;
+    height: auto;
+    padding: .6rem 1rem;
+    background: #00ff99;
+    color: #04221a;
+    font-weight: 700;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px -4px rgba(0,0,0,.4);
+}
