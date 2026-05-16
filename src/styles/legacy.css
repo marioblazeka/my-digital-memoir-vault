@@ -12,32 +12,17 @@
 .rotating-text-svg {
     width: 100%;
     height: 100%;
-    animation: rotateText 20s linear infinite;
+    animation: rotateSvg 30s linear infinite;
 }
 
 .rotating-text {
     font-family: 'Arial', sans-serif;
     font-weight: bold;
-    font-size: 16px;
-    letter-spacing: 4px;
+    font-size: 14px;
+    letter-spacing: 2px;
     fill: #000000;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     animation: none;
-}
-
-@keyframes rotateText {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Animacija samog SVG elementa */
-.rotating-text-svg {
-    transform-origin: center;
-    animation: rotateSvg 30s linear infinite;
 }
 
 @keyframes rotateSvg {
@@ -293,7 +278,7 @@
     }
 
     .rotating-text {
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .hero-content h1 {
@@ -334,8 +319,8 @@
     }
 
     .rotating-text {
-        font-size: 12px;
-        letter-spacing: 2px;
+        font-size: 10px;
+        letter-spacing: 1px;
     }
 
     .hero-section {
@@ -826,7 +811,7 @@ body.focus-mode .section:not(.focused) {
 
 /* Large cursor */
 body.large-cursor {
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="%230088ff" stroke-width="2"/><circle cx="16" cy="16" r="3" fill="%230088ff"/></svg>') 16 16, auto;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="%230088ff" stroke-width="2"/></svg>') 16 16, auto;
 }
 
 /* Underline all links */
@@ -998,7 +983,7 @@ body.yellow-theme .hero-section {
     .back-to-top {
         width: 40px;
         height: 40px;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         bottom: 1rem;
         right: 1rem;
     }
